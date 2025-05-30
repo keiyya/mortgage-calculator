@@ -1,7 +1,29 @@
+import { useState } from "react";
+
 import Illustration from "../src/assets/images/illustration-empty.svg";
 import Calculator from "../src/assets/images/icon-calculator.svg";
 
 export default function App() {
+  const [mortgageAmount, setMortgageAmount] = useState("");
+  const [mortgageTerm, setMortgageTerm] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [mortgageType, setMortgageType] = useState("");
+
+  function handleAmountChange(e) {
+    setMortgageAmount(e.target.value);
+    console.log(mortgageAmount);
+  }
+
+  function handleTermChange(e) {
+    setMortgageTerm(e.target.value);
+    console.log(mortgageTerm);
+  }
+
+  function handleRateChange(e) {
+    setInterestRate(e.target.value);
+    console.log(interestRate);
+  }
+
   return (
     <main className="bg-neutral-white flex flex-col w-2/5 mx-auto lg:w-4/5 lg:flex-row">
       {/* Calculator */}
@@ -10,7 +32,15 @@ export default function App() {
           <h1 className="font-bold">Mortgate Calculator</h1>
           <button>Clear All</button>
         </div>
-        <Form />
+        <Form
+          mortgageTerm={mortgageTerm}
+          mortgageAmount={mortgageAmount}
+          interestRate={interestRate}
+          mortgageType={mortgageType}
+          onHandleAmountChange={handleAmountChange}
+          onHandleTermChange={handleTermChange}
+          onHandleRateChange={handleRateChange}
+        />
       </div>
 
       {/* Results */}
@@ -28,20 +58,45 @@ export default function App() {
   );
 }
 
-function Form() {
+function Form({
+  mortgageAmount,
+  mortgageTerm,
+  interestRate,
+  mortgageType,
+  onHandleAmountChange,
+  onHandleTermChange,
+  onHandleRateChange,
+}) {
   return (
     <form className="space-y-5">
-      <FormInput label="Mortgage Amount" prefix="£" />
+      <FormInput
+        label="Mortgage Amount"
+        prefix="£"
+        handleChange={onHandleAmountChange}
+        value={mortgageAmount}
+      />
 
       <div className="flex flex-col gap-4 lg:flex-row">
-        <FormInput label="Mortgage Term" suffix="years" wrapperClass="flex-1" />
-        <FormInput label="Interest Rate" suffix="%" wrapperClass="flex-1" />
+        <FormInput
+          label="Mortgage Term"
+          suffix="years"
+          wrapperClass="flex-1"
+          handleChange={onHandleTermChange}
+          value={mortgageTerm}
+        />
+        <FormInput
+          label="Interest Rate"
+          suffix="%"
+          wrapperClass="flex-1"
+          handleChange={onHandleRateChange}
+          value={interestRate}
+        />
       </div>
 
       <div className="">
         <h2>Mortgage Type</h2>
-        <RadioInput label="Repayment" />
-        <RadioInput label="Intrest Only" />
+        <RadioInput label="Repayment" name="Mortgage Type" />
+        <RadioInput label="Interest Only" name="Mortgage Type" />
       </div>
       <button className="flex items-center justify-center gap-2 bg-primary-lime p-3 rounded-full">
         <img src={Calculator} alt="Calculator Icon" />
@@ -51,7 +106,14 @@ function Form() {
   );
 }
 
-function FormInput({ label, prefix, suffix, wrapperClass }) {
+function FormInput({
+  label,
+  prefix,
+  suffix,
+  wrapperClass,
+  handleChange,
+  value,
+}) {
   return (
     <div
       className={`flex flex-col gap-4 my-3 text-neutral-slate300 ${wrapperClass}`}
@@ -72,20 +134,21 @@ function FormInput({ label, prefix, suffix, wrapperClass }) {
         )}
         <input
           type="number"
-          className={`w-full h-full border-none outline outline-neutral-slate300 rounded-xs py-2 ${
+          className={`w-full h-full border-none outline outline-neutral-slate300 text-neutral-slate900 font-bold rounded-xs py-2 focus:outline-primary-lime ${
             prefix ? "pl-10" : "pl-3"
           } ${suffix ? "pr-10" : "pr-3"}`}
-          placeholder="0"
+          value={value}
+          onChange={handleChange}
         />
       </div>
     </div>
   );
 }
 
-function RadioInput({ label }) {
+function RadioInput({ label, name }) {
   return (
     <label className="flex items-center gap-2 text-neutral-slate300 outline outline-neutral-slate300 rounded-xs p-2 my-2">
-      <input type="radio" value={label} />
+      <input type="radio" value={label} name={name} />
       {label}
     </label>
   );
